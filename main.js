@@ -27,34 +27,35 @@ function writeBackText(text) {
 
 // should be async (it would be silly to do it syncr)
 function continuousGetFile(filename, postfunct) {
-	var agaxRequest;
+	var ajaxRequest;
 
 	if(window.XMLHttpRequest) 
-		agaxRequest = new XMLHttpRequest();
+		ajaxRequest = new XMLHttpRequest();
 	else
-		agaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+		ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
 
-	agaxRequest.onreadystatechange = function() {
-		if (agaxRequest.readyState==4 && agaxRequest.status==200) {
-			postfunct(agaxRequest.responseText);
+	// recursive step: 
+	// (but another way to think about it is this 
+	//	"resets the interrupt enable")
+	var sendRequest = function() {
+		ajaxRequest.open("GET", 
+		filename+"?random="+(new Date()).getTime(), true);
+		ajaxRequest.send();
+	}
+
+	ajaxRequest.onreadystatechange = function() {
+		if (ajaxRequest.readyState==4 && ajaxRequest.status==200) {
+			postfunct(ajaxRequest.responseText);
 			
 			counter++;
 			count.innerHTML = "# of GETs so far: "+counter;
 				
-			// recursive step: 
-			// (but another way to think about it is this 
-			//	"resets the interrupt enable")
-			var sendRequest = function() {
-				agaxRequest.open("GET", 
-					filename+"?random="+(new Date()).getTime(), true);
-				agaxRequest.send();
-			}
 			setTimeout(sendRequest, 500);
 		}
 	}
 
-	agaxRequest.open("GET", filename+"?random="+(new Date()).getTime(), true);
-	agaxRequest.send();
+	ajaxRequest.open("GET", filename+"?random="+(new Date()).getTime(), true);
+	ajaxRequest.send();
 }
 
 function initPostRequest(filename, isAsync) {
@@ -77,28 +78,29 @@ function initPostRequest(filename, isAsync) {
 function postFile(filename, isAsync, text, ajaxRequest) {
 	var params = "text="+text+"&filename="+filename;
 	ajaxRequest.open("POST","write.php",isAsync);
-	ajaxRequest.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	ajaxRequest.setRequestHeader("Content-type",
+		"application/x-www-form-urlencoded");
 	ajaxRequest.send(params);
 }
 
 function getFile(filename, postfunct, isAsync) {
-	var agaxRequest;
+	var ajaxRequest;
 
 	if(window.XMLHttpRequest) 
-		agaxRequest = new XMLHttpRequest();
+		ajaxRequest = new XMLHttpRequest();
 	else
-		agaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+		ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
 
 	if (isAsync) {
-		agaxRequest.onreadystatechange = function() {
-			if (agaxRequest.readyState==4 && agaxRequest.status==200) 
-				postfunct(agaxRequest.responseText);
+		ajaxRequest.onreadystatechange = function() {
+			if (ajaxRequest.readyState==4 && ajaxRequest.status==200) 
+				postfunct(ajaxRequest.responseText);
 		}
 	}
 
-	agaxRequest.open("GET", filename, isAsync);
-	agaxRequest.send();
+	ajaxRequest.open("GET", filename, isAsync);
+	ajaxRequest.send();
 	
 	if (!isAsync)
-		postfunct(agaxRequest.responseText);
+		postfunct(ajaxRequest.responseText);
 }
