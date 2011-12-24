@@ -1,0 +1,10 @@
+// kinda cool, eh?
+// hello!
+// yup, pretty cool!
+void main(void) {
+	int x = 3;
+	int y = 4;
+	while(x == y) {
+		x = x ;   
+	}
+} 

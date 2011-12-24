@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>Test of interactive textbox</title>
+	<meta charset="utf-8"/>
+	<script src="main.js"></script>
+<!--	
+    <link rel="stylesheet" href="./CodeMirror/codemirror.css">
+    <script src="./CodeMirror/codemirror.js"></script>
+    <script src="./CodeMirror/clike.js"></script>
+    <style>.CodeMirror {border: 2px inset #dee;}</style>
+-->
+</head>
+<body onload=init();>
+	<h2>Testing google doc functionality</h2>
+	<textarea onkeyup="writeBackText(this.value)" 
+		rows=10 cols=30 id="code" name="code"></textarea>
+<!--
+    <script>
+      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+        matchBrackets: true,
+        mode: "text/x-csrc"
+      });
+    </script>
+-->
+	<p id="counter"></p>
+	<p id="debug"></p>
+</body>
+</html>
